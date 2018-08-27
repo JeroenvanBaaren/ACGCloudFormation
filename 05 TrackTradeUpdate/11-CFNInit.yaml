@@ -1,6 +1,6 @@
 Parameters:
   NameOfService:
-    Description: "The name of the Linux EC2 DMZ service in Ireland or Frankfurt. Includes Packages"
+    Description: "The name of the service this stack is to be used for."
     Type: String
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access into the server
@@ -13,10 +13,16 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
 Mappings:
   RegionMap:
+    us-east-1:
+      AMI: ami-1853ac65
+    us-west-1:
+      AMI: ami-bf5540df
     eu-west-1:
-      AMI: ami-047bb4163c506cd98
-    eu-central-1:
-      AMI: ami-0233214e13e500f77
+      AMI: ami-3bfab942
+    ap-southeast-1:
+      AMI: ami-e2adf99e
+    ap-southeast-2:
+      AMI: ami-43874721    
 Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -30,7 +36,7 @@ Resources:
           files: 
             /var/www/html/index.php:
               content: !Sub |
-                <?php print "Running Apache for TrackTrade!"; ?>
+                <?php print "Hello world Abs was here!"; ?>
           services: 
             sysvinit:
               httpd:
@@ -44,9 +50,8 @@ Resources:
         - !Ref AWS::Region
         - AMI
       SecurityGroupIds:
-        - !Ref DMZSecurityGroup
-      SubnetId: 
-        - !Ref SubnetId
+        - !Ref MySecurityGroup
+      SubnetId: !Ref SubnetId
       Tags:
         - Key: Name
           Value: !Ref NameOfService
@@ -59,24 +64,15 @@ Resources:
             yum install -y aws-cfn-bootstrap
             # Install the files and packages from the metadata
             /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance  --region ${AWS::Region}
-  DMZSecurityGroup:
+  MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Open Ports 22, 80, 443
-      VpcId: 
-      - !Ref VpcId
+      GroupDescription: Open Ports 22 and 80
+      VpcId: !Ref VpcId
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
-        CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
         FromPort: '80'
         ToPort: '80'
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: '443'
-        ToPort: '443'
         CidrIp: 0.0.0.0/0
 Outputs:
   Website:
