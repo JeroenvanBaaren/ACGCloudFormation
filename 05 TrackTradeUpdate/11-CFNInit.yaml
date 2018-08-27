@@ -1,0 +1,82 @@
+Parameters:
+  NameOfService:
+    Description: "The name of the Linux EC2 DMZ service in Ireland or Frankfurt. Includes Packages"
+    Type: String
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access into the server
+    Type: AWS::EC2::KeyPair::KeyName
+  VpcId:
+    Description: Enter the VpcId
+    Type: AWS::EC2::VPC::Id
+  SubnetId:
+    Description: Enter the SubnetId
+    Type: AWS::EC2::Subnet::Id
+Mappings:
+  RegionMap:
+    eu-west-1:
+      AMI: ami-047bb4163c506cd98
+    eu-central-1:
+      AMI: ami-0233214e13e500f77
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Metadata: 
+      AWS::CloudFormation::Init:
+        config: 
+          packages: 
+            yum:
+              httpd: []
+              php: []
+          files: 
+            /var/www/html/index.php:
+              content: !Sub |
+                <?php print "Running Apache for TrackTrade!"; ?>
+          services: 
+            sysvinit:
+              httpd:
+                enabled: true
+                ensureRunning: true
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      SecurityGroupIds:
+        - !Ref DMZSecurityGroup
+      SubnetId: !Ref SubnetId
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
+      KeyName: !Ref KeyName
+      UserData:
+        'Fn::Base64': 
+          !Sub |
+            #!/bin/bash -xe            
+            # Ensure AWS CFN Bootstrap is the latest
+            yum install -y aws-cfn-bootstrap
+            # Install the files and packages from the metadata
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance  --region ${AWS::Region}
+  DMZSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open Ports 22, 80, 443
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '443'
+        ToPort: '443'
+        CidrIp: 0.0.0.0/0
+Outputs:
+  Website:
+    Description: The Public DNS for the EC2 Instance
+    Value: !Sub 'http://${EC2Instance.PublicDnsName}'
