@@ -45,6 +45,8 @@ Resources:
         - AMI
       SecurityGroupIds:
         - !Ref DMZSecurityGroup
+      SubnetId: 
+        - !Ref SubnetId
       Tags:
         - Key: Name
           Value: !Ref NameOfService
