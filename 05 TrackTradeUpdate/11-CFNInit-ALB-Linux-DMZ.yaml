@@ -52,6 +52,9 @@ Resources:
       MaxSize: 3
       TargetGroupARNs: 
         - !Ref TargetGroup
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata: 
@@ -81,6 +84,9 @@ Resources:
         - RegionMap
         - !Ref AWS::Region
         - AMI
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
       UserData:
         'Fn::Base64': 
           !Sub |
@@ -99,10 +105,16 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
   EC2SecurityGroup: 
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: EC2 Instance
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
   EC2InboundRule: # EC2 can only accept traffic from ALB
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
