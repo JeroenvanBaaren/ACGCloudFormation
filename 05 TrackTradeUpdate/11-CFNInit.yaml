@@ -5,6 +5,12 @@ Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access into the server
     Type: AWS::EC2::KeyPair::KeyName
+  VpcId:
+    Description: Enter the VpcId
+    Type: AWS::EC2::VPC::Id
+  SubnetId:
+    Description: Enter the SubnetId
+    Type: AWS::EC2::Subnet::Id
 Mappings:
   RegionMap:
     eu-west-1:
