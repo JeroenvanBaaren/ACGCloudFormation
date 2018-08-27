@@ -9,7 +9,7 @@ Parameters:
     Description: Enter the VpcId
     Type: AWS::EC2::VPC::Id
   SubnetIds:
-    Description: Enter the Subnets
+    Description: Enter all the Subnets belonging to the DMZ VPC
     Type: List<AWS::EC2::Subnet::Id>
 Mappings:
   RegionMap:
