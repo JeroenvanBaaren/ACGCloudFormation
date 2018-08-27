@@ -1,7 +1,7 @@
 Parameters:
   NameOfService:
     Description: "The name of the Linux EC2 DMZ ALB service in Ireland or Frankfurt."
-  Type: String
+    Type: String
   myKeyPair: 
     Description: Amazon EC2 Key Pair
     Type: AWS::EC2::KeyPair::KeyName
