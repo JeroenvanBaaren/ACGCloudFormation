@@ -1,4 +1,4 @@
-arameters:
+Parameters:
   NameOfService:
     Description: "The name of the Linux EC2 DMZ service in Ireland or Frankfurt. Includes Packages"
     Type: String
