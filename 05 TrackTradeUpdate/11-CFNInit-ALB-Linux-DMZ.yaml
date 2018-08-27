@@ -24,6 +24,9 @@ Resources:
       SecurityGroups:
         - !Ref ALBSecurityGroup
       Subnets: !Ref SubnetIds
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
   LoadBalancerListener: # Port 80 Listener for ALB
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
