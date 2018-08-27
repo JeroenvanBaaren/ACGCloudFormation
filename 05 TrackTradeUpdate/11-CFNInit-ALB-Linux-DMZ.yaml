@@ -1,4 +1,7 @@
 Parameters:
+  NameOfService:
+    Description: "The name of the Linux EC2 DMZ ALB service in Ireland or Frankfurt."
+  Type: String
   myKeyPair: 
     Description: Amazon EC2 Key Pair
     Type: AWS::EC2::KeyPair::KeyName
@@ -59,7 +62,7 @@ Resources:
           files: 
             /var/www/html/index.php:
               content: !Sub |
-                <?php print "Hello world Abs was here!"; ?>
+                <?php print "Apache webserver Tracktrade!"; ?>
           services: 
             sysvinit:
               httpd:
