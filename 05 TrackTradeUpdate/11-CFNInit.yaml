@@ -45,7 +45,8 @@ Resources:
         - AMI
       SecurityGroupIds:
         - !Ref DMZSecurityGroup
-      SubnetId: !Ref SubnetId
+      SubnetId: 
+        - !Ref SubnetId
       Tags:
         - Key: Name
           Value: !Ref NameOfService
@@ -62,7 +63,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Open Ports 22, 80, 443
-      VpcId: !Ref VpcId
+      VpcId: 
+      - !Ref VpcId
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: '22'
